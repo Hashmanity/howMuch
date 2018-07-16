@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import urllib2 
 import re
 import requests
 import sys
 from bs4 import BeautifulSoup
 
-currencySymbols = {'dollars': '$', 'rupees': 'Rs.'}
+currencySymbols = {'dollars': '$', 'rupees': 'Rs.', 'pounds': '£'}
 
 item_query = raw_input("what are you looking to buy?\n")
 currency_query = raw_input("please enter your currency in words \n")
@@ -16,9 +17,10 @@ r = requests.get(search_query)
 
 soup = BeautifulSoup(r.text, 'html.parser')
 
+
 def extractPrice(summaryText):
-	start = summaryText.find(currencySymbols[currency_query])
-	if currencySymbols[currency_query] == "Rs.":
+	start = summaryText.find(currencySymbols[currency_query].decode('utf-8'))
+	if currencySymbols[currency_query].decode('utf-8') == "Rs.":
 		start += 4
 	else:
 		start += 1
@@ -36,7 +38,7 @@ for g in soup.find_all(class_ = "s"):
 index = -1
 
 for i in range(len(sentence)):
-	if currencySymbols[currency_query] in sentence[i]:
+	if currencySymbols[currency_query].decode('utf-8') in sentence[i]:
 		index = i 
 		break;
 
@@ -46,7 +48,5 @@ if index == -1:
 
 output = extractPrice(sentence[index])
 
-
-
-print("The cost is %s%s" % (currencySymbols[currency_query], output))
+print("The cost is %s%s" % (currencySymbols[currency_query].decode('utf-8'), output))
 
